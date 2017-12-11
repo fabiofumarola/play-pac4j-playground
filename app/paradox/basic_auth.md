@@ -86,7 +86,7 @@ pac4j.security {
 @@@
 
 This is what we need to setup basic authentication. 
-Now we can start the application with `sbt run` and then do the following curl to login with basic auth using admin/admin as credentials.
+Now we can start the application with `sbt run` and then do the following curl to login with basic auth using admin/admin (encoded) as credentials.
 
 ```bash
 
@@ -94,12 +94,15 @@ curl -X GET "http://localhost:9000/basicsecured" -H  "accept: application/json" 
 
 ```
 
+## Handling Authentication Errors
+
+In order to make clear the errors in case of authentication errors we setup common helpers. More details can be found [here](./common_helpers.md)
+
 In the following we will see:
 
-1. how to use `IndirectBasicAuthClient` to perform the login using the broser
-2. how to use `ParameterClient` to perform the login via a param `?user`
+1. how to use `IndirectBasicAuthClient` to perform the login using the browser
+2. how to use `ParameterClient` to perform the login via a param `?token`
 3. how to perform the logout.
-
 
 
 
