@@ -1,11 +1,11 @@
 
-scalaVersion := "2.12.3"
+scalaVersion := "2.12.4"
 
-val playVersion = "2.6.7"
+val playVersion = "2.6.10"
 val pac4jVersion = "2.2.0"
 
 lazy val root = (project in file("."))
-  .enablePlugins(PlayScala, ParadoxPlugin)
+  .enablePlugins(PlayScala, ParadoxPlugin, Jolokia)
   .settings(
     organization := "it.gov.daf",
     name := """play-pac4j-playground""",

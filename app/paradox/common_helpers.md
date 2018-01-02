@@ -18,11 +18,11 @@ play.http.errorHandler = "CustomErrorHandler"
 
 Finally, in the package `views` we added the page `error500.scala.html` that display the errors to the client.
 
-@snip[error500.scala.html](./../views/error500.scala.html)
+@@snip[error500.scala.html](./../views/error500.scala.html)
 
 
 ## Unauthorized Http Action Adapter
 
-This class is used to manage authorization errors. It displays a 401 or a 403 page.
+This class is used to manage authorization errors. It displays a 401 or a 403 page basing on the error code.
 
-@snip[UnauthorizedHttpActionAdapter.scala](../controllers/UnauthorizedHttpActionAdapter.scala)
+@@snip[UnauthorizedHttpActionAdapter.scala](./../controllers/UnauthorizedHttpActionAdapter.scala)

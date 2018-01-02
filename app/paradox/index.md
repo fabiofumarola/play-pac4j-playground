@@ -1,6 +1,7 @@
 @@@ index
 
 * [Basic Authentication](basic_auth.md)
+* [Helpers](common_helpers.md)
 
 @@@
 
@@ -19,8 +20,9 @@ The main concepts in pac4j are:
 ## 1. Clients
 
 Clients can be categorized into:
-1. direct client: such as web services o HTTP clients, which negotiate the access directly.
-2. indirect client: that uses redirects to a third party service to perform the login (e.g. facebook, google, twitter)
+
+1. **direct client**: such as web services o HTTP clients, which negotiate the access directly.
+2. **indirect client**: that uses redirects to a third party service to perform the login (e.g. facebook, google, twitter)
 More details about them can be found [here](http://www.pac4j.org/docs/clients.html#1-direct-vs-indirect-clients)
 
 The supported clients are listed [here](http://www.pac4j.org/docs/clients.html).
@@ -68,7 +70,7 @@ It checks if a user profile extracted by a client has the authorization to acces
 
 Urls can be protected via:
 
-1. Secure annotation on controllers methods
+- **Secure annotation** on controllers methods
 
 ```scala
 
@@ -80,7 +82,7 @@ Urls can be protected via:
 
 ```
 
-2. Security filters defined in the `application.conf` file
+- **Security filter** defined in the `application.conf` file
 
 ```hocon 
 

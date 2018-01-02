@@ -34,6 +34,7 @@ class HomeController @Inject() (
     Ok(views.html.index())
   }
 
+  //this method can be moved to a common trait
   private def getProfiles(implicit request: RequestHeader): List[CommonProfile] = {
     val webContext = new PlayWebContext(request, playSessionStore)
     val profileManager = new ProfileManager[CommonProfile](webContext)
