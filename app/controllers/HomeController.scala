@@ -53,4 +53,16 @@ class HomeController @Inject() (
     Ok(views.html.protectedIndex(profiles))
   }
 
+  def browserForm = Secure("IndirectBasicAuthClient") { profiles =>
+    actionBuilder { request =>
+      Ok(views.html.protectedIndex(profiles))
+    }
+  }
+
+  def paramSecured() = Secure("ParameterClient") {profiles =>
+    actionBuilder { request =>
+      Ok(views.html.protectedIndex(profiles))
+    }
+  }
+
 }

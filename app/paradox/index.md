@@ -25,6 +25,9 @@ Clients can be categorized into:
 2. **indirect client**: that uses redirects to a third party service to perform the login (e.g. facebook, google, twitter)
 More details about them can be found [here](http://www.pac4j.org/docs/clients.html#1-direct-vs-indirect-clients)
 
+The first category is for web service authentication, where the credentials happens for each http request (stateless).
+The second category if for UI authentication and the login happens once per session (stateful).
+
 The supported clients are listed [here](http://www.pac4j.org/docs/clients.html).
 
 While most clients are self-sufficient, the HTTP clients require defining an Authenticator to handle the credentials validation.

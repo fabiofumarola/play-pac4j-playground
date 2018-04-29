@@ -1,11 +1,11 @@
 
-scalaVersion := "2.12.4"
+scalaVersion := "2.12.6"
 
-val playVersion = "2.6.10"
-val pac4jVersion = "2.2.0"
+val playVersion = "2.6.13"
+val pac4jVersion = "4.1.1"
 
 lazy val root = (project in file("."))
-  .enablePlugins(PlayScala, ParadoxPlugin, Jolokia)
+  .enablePlugins(PlayScala, ParadoxPlugin)
   .settings(
     organization := "it.gov.daf",
     name := """play-pac4j-playground""",
@@ -21,8 +21,10 @@ lazy val root = (project in file("."))
       ehcache,
       filters,
       "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
-      "org.pac4j" % "play-pac4j" % "4.1.1",
-      "org.pac4j" % "pac4j-http" % pac4jVersion,
+      "org.pac4j" % "play-pac4j" % pac4jVersion,
+      "org.pac4j" % "pac4j-jwt" % "2.3.1" exclude("commons-io" , "commons-io"),
+      "org.pac4j" % "pac4j-ldap" % "2.3.1",
+      "org.pac4j" % "pac4j-http" % "2.3.1",
       "com.typesafe.play" %% "play-cache" % playVersion
     )
   )
@@ -33,4 +35,3 @@ lazy val root = (project in file("."))
 
 // Adds additional packages into conf/routes
 // play.sbt.routes.RoutesKeys.routesImport += "it.gov.daf.binders._"
-
