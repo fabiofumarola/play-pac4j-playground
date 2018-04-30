@@ -31,7 +31,6 @@ class HomeController @Inject() (
    * a path of `/`.
    */
   def index() = Action { implicit request: Request[AnyContent] =>
-    println(playSessionStore)
     Ok(views.html.index())
   }
 
