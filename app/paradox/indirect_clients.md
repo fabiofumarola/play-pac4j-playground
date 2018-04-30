@@ -67,6 +67,6 @@ add the two routes for the browser form and params
   }
 ```
 
+#### Other Clients
 
-
-
+Pac4j supports other indirect clients like facebook, twitter, google app engine but we are not going to cover them here.

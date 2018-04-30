@@ -31,6 +31,7 @@ class HomeController @Inject() (
    * a path of `/`.
    */
   def index() = Action { implicit request: Request[AnyContent] =>
+    println(playSessionStore)
     Ok(views.html.index())
   }
 
@@ -48,6 +49,10 @@ class HomeController @Inject() (
     }
   }
 
+  /**
+    * check the application.conf to find the interceptor for the client to be used
+    * @return
+    */
   def basicAuthAlternative = actionBuilder { request =>
     val profiles = getProfiles(request)
     Ok(views.html.protectedIndex(profiles))
