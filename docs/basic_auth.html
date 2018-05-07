@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+<title>Basic Authentication · Pac4j Play Integration</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content='play-pac4j-playground'/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:100normal,100italic,300normal,300italic,400normal,400italic,500normal,500italic,700normal,700italic,900normal,900italicc" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="js/page.js"></script>
+<script type="text/javascript" src="js/groups.js"></script>
+<link rel="stylesheet" type="text/css" href="lib/normalize.css/normalize.css"/>
+<link rel="stylesheet" type="text/css" href="lib/foundation/dist/foundation.min.css"/>
+<link rel="stylesheet" type="text/css" href="css/page.css"/>
+
+<!--
+<link rel="shortcut icon" href="images/favicon.ico" />
+-->
+</head>
+
+<body>
+<div class="off-canvas-wrapper">
+<div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+
+<div class="off-canvas position-left" id="off-canvas-menu" data-off-canvas>
+<nav class="off-canvas-nav">
+<div class="nav-home">
+<a href="index.html" >
+<span class="home-icon">⌂</span>Pac4j Play Integration
+</a>
+<div class="version-number">
+1.0.0*
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="basic_auth.html" class="active page">Basic Authentication</a></li>
+  <li><a href="common_helpers.html" class="page">Common Helpers</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="off-canvas-content" data-off-canvas-content>
+
+<header class="site-header expanded row">
+<div class="small-12 column">
+<a href="#" class="off-canvas-toggle hide-for-medium" data-toggle="off-canvas-menu"><svg class="svg-icon svg-icon-menu" version="1.1" id="Menu" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve"> <path class="svg-icon-menu-path" fill="#53CDEC" d="M16.4,9H3.6C3.048,9,3,9.447,3,10c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,9.447,16.952,9,16.4,9z M16.4,13
+H3.6C3.048,13,3,13.447,3,14c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,13.447,16.952,13,16.4,13z M3.6,7H16.4
+C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.048,7,3.6,7z"/></svg>
+</a>
+<div class="title"><a href="index.html">Pac4j Play Integration</a></div>
+
+<!--
+<a href="https://www.example.com" class="logo show-for-medium">logo</a>
+-->
+</div>
+</header>
+
+<div class="expanded row">
+
+<div class="medium-3 large-2 show-for-medium column">
+<nav class="site-nav">
+<div class="nav-home">
+<a href="index.html" >
+<span class="home-icon">⌂</span>Pac4j Play Integration
+</a>
+<div class="version-number">
+1.0.0*
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="basic_auth.html" class="active page">Basic Authentication</a></li>
+  <li><a href="common_helpers.html" class="page">Common Helpers</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="small-12 medium-9 large-10 column">
+<section class="site-content">
+
+<div class="page-header row">
+<div class="medium-12 show-for-medium column">
+<div class="nav-breadcrumbs">
+<ul>
+  <li><a href="index.html">Pac4j Play Integration</a></li>
+  <li>Basic Authentication</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="page-content row">
+<div class="small-12 large-9 column" id="docs">
+<h1><a href="#basic-authentication" name="basic-authentication" class="anchor"><span class="anchor-link"></span></a>Basic Authentication</h1>
+<p>Here we are going to explain how to setup <strong>basic_auth</strong>. Please checkout the <em>basic_auth</em> branch. </p>
+<h2><a href="#security-module" name="security-module" class="anchor"><span class="anchor-link"></span></a>Security Module</h2>
+<p>In the package <code>app</code> create a folder named <code>module</code> and place the class <code>SecurityModule</code> that extends <code>AbstracModule</code>. This class uses <a href="https://github.com/google/guice">Google dependency injection</a> and defines the client to be used which is <code>DirectBasicAuthClient</code>. </p>
+<p>Both the clients uses as authenticator <code>SimpleTestUsernamePasswordAuthenticator</code>, that requires username equal to the password. However, in the next tutorials we are going to use external <strong>Authenticators</strong> (<a href="http://www.pac4j.org/docs/authenticators/ldap.html">LDAP</a>, and <a href="http://www.pac4j.org/docs/authenticators/jwt.html">JWT</a>).</p>
+<p>Looking at the method <code>provideConfig</code> we can see how the client is bind to an instance of <code>org.pac4j.core.config.Config</code>.</p>
+<pre class="prettyprint"><code class="language-scala">package modules
+
+import java.time.Duration
+
+import com.google.inject.{AbstractModule, Provides}
+import controllers.UnauthorizedHttpActionAdapter
+import org.ldaptive.auth.{Authenticator, FormatDnResolver, PooledBindAuthenticationHandler, SearchDnResolver}
+import org.ldaptive.pool._
+import org.ldaptive.ssl.SslConfig
+import org.ldaptive.{BindConnectionInitializer, ConnectionConfig, Credential, DefaultConnectionFactory}
+import org.pac4j.core.client.Clients
+import org.pac4j.core.config.Config
+import org.pac4j.http.client.direct.{DirectBasicAuthClient, ParameterClient}
+import org.pac4j.http.client.indirect.IndirectBasicAuthClient
+import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
+import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator
+import org.pac4j.ldap.profile.service.LdapProfileService
+import org.pac4j.play.{CallbackController, LogoutController}
+import org.pac4j.play.store.{PlayCacheSessionStore, PlaySessionStore}
+import play.api.{Configuration, Environment}
+
+
+class SecurityModule(env: Environment, conf: Configuration) extends AbstractModule {
+
+  val baseUrl = conf.get[String](&quot;baseUrl&quot;)
+
+  override def configure(): Unit = {
+    //The PlayCacheSessionStore is defined as the implementation for the session store: profiles will be saved in the Play Cache.
+    bind(classOf[PlaySessionStore]).to(classOf[PlayCacheSessionStore])
+
+    // callback
+    val callbackController = new CallbackController()
+    callbackController.setDefaultUrl(&quot;/?defaulturlafterlogout&quot;)
+    callbackController.setMultiProfile(true)
+    bind(classOf[CallbackController]).toInstance(callbackController)
+
+    // logout
+    val logoutController = new LogoutController()
+    logoutController.setDefaultUrl(&quot;/&quot;)
+    bind(classOf[LogoutController]).toInstance(logoutController)
+
+  }
+
+  private def getJwtAuthenticator = {
+    val jwtAuthenticator = new JwtAuthenticator()
+    jwtAuthenticator.addSignatureConfiguration(
+      new SecretSignatureConfiguration(conf.get[String](&quot;pac4j.jwt_secret&quot;))
+    )
+    jwtAuthenticator
+  }
+
+  private def getLdapAuthenticator() = {
+    val connectionConfig = new ConnectionConfig()
+    connectionConfig.setConnectTimeout(
+      Duration.ofMillis(conf.get[Long](&quot;pac4j.ldap.conn_timeout&quot;)))
+    connectionConfig.setResponseTimeout(
+      Duration.ofMillis(conf.get[Long](&quot;pac4j.ldap.resp_timeout&quot;)))
+    connectionConfig.setLdapUrl(conf.get[String](&quot;pac4j.ldap.url&quot;))
+
+    connectionConfig.setConnectionInitializer(
+      new BindConnectionInitializer(
+        conf.get[String](&quot;pac4j.ldap.bind_dn&quot;),
+        new Credential(conf.get[String](&quot;pac4j.ldap.bind_pwd&quot;))
+      )
+    )
+
+    connectionConfig.setUseSSL(true) //TODO Shall we keep SSL mandatory
+    val sslConfig = new SslConfig()
+    sslConfig.setTrustManagers() //TODO no more certificate validation, shall we keep it in this way?
+    connectionConfig.setSslConfig(sslConfig)
+
+    val connectionFactory = new DefaultConnectionFactory()
+    connectionFactory.setConnectionConfig(connectionConfig)
+    val poolConfig = new PoolConfig()
+    poolConfig.setMinPoolSize(1)
+    poolConfig.setMaxPoolSize(2)
+    poolConfig.setValidateOnCheckIn(true)
+    poolConfig.setValidateOnCheckOut(true)
+    poolConfig.setValidatePeriodically(false)
+
+    val searchValidator = new SearchValidator
+    val pruneStrategy = new IdlePruneStrategy
+    val connectionPool = new BlockingConnectionPool
+    connectionPool.setPoolConfig(poolConfig)
+    connectionPool.setBlockWaitTime(Duration.ofMillis(1000))
+    connectionPool.setValidator(searchValidator)
+    connectionPool.setPruneStrategy(pruneStrategy)
+    connectionPool.setConnectionFactory(connectionFactory)
+    connectionPool.initialize()
+    val pooledConnectionFactory = new PooledConnectionFactory
+    pooledConnectionFactory.setConnectionPool(connectionPool)
+
+    val pooledBindHandler = new PooledBindAuthenticationHandler()
+    pooledBindHandler.setConnectionFactory(pooledConnectionFactory)
+
+    val dnResolver = new SearchDnResolver(connectionFactory)
+    dnResolver.setBaseDn(conf.get[String](&quot;pac4j.ldap.base_user_dn&quot;))
+    dnResolver.setUserFilter(
+      s&quot;(${conf.get[String](&quot;pac4j.ldap.login_attribute&quot;)}={user})&quot;)
+
+    val authenticator = new Authenticator()
+    authenticator.setDnResolver(dnResolver)
+    authenticator.setAuthenticationHandler(pooledBindHandler)
+
+    val ldapProfileService = new LdapProfileService(connectionFactory, authenticator,
+      conf.get[String](&quot;pac4j.ldap.base_user_dn&quot;)
+    )
+    ldapProfileService.setAttributes(&quot;memberOf&quot;)
+    ldapProfileService.setUsernameAttribute(conf.get[String](&quot;pac4j.ldap.username_attribute&quot;))
+
+    ldapProfileService
+  }
+
+
+
+  //now we use ldap
+  @Provides
+  def directBasicAuthClient =
+    new DirectBasicAuthClient(getLdapAuthenticator())
+
+
+  @Provides
+  def provideIndirectBasicAuthClient: IndirectBasicAuthClient =
+    new IndirectBasicAuthClient(getLdapAuthenticator())
+
+  @Provides
+  def provideParameterClient: ParameterClient = {
+    //authenticate using a simple not empty token
+    val client = new ParameterClient(&quot;token&quot;, getJwtAuthenticator)
+    client.setSupportGetRequest(true)
+    client.setSupportPostRequest(false)
+    client
+  }
+
+  @Provides
+  def providesConfig(
+    directBasicAuthClient: DirectBasicAuthClient,
+    indirectBasicAuthClient: IndirectBasicAuthClient,
+    parameterClient: ParameterClient,
+  ): Config = {
+    //  1. define the client
+    val clients = new Clients(baseUrl + &quot;/callback&quot;, directBasicAuthClient, indirectBasicAuthClient, parameterClient)
+
+    //add the config for your clients
+    val config = new Config(clients)
+    config.setHttpActionAdapter(new UnauthorizedHttpActionAdapter())
+    config
+  }
+}</code></pre>
+<p>Note that we add an instance of <code>UnauthorizedHttpActionAdapter</code> to return a page in case of authorization failure.</p>
+<p>Finally, this module can be enabled by adding the following line in the file <code>application.conf</code>.</p>
+<pre class="prettyprint"><code class="language-hocon"><br/>play.modules.enabled += &quot;modules.SecurityModule&quot;
+
+</code></pre>
+<h2><a href="#securing-a-controller" name="securing-a-controller" class="anchor"><span class="anchor-link"></span></a>Securing a Controller</h2>
+<p>Now it is time to try the security module by securing a route in a controller. This is done decorating a method with:</p>
+<pre class="prettyprint"><code class="language-scala"><br/> Secure(&quot;DirectBasicAuthClient&quot;) { profiles =&gt;
+    //method logic and result
+ }
+</code></pre>
+<p>A complete example is provide in the snippet below, where you can see how the method <code>basicSecured</code> is secured using the <code>DirectBasicAuthClient</code>. Note that:</p>
+<ol>
+  <li>The controller is mixed with <code>org.pac4j.play.scala.Security[T]</code> that has the overloaded <code>Secure</code> method to secure the controller routes.</li>
+  <li>The method <code>basicSecured</code> that uses the <code>Secure</code> method.</li>
+  <li>The method <code>basicAuthAlternative</code> that uses <em>Security Filters</em> described below.</li>
+</ol>
+<pre class="prettyprint"><code class="language-scala">package controllers
+
+import javax.inject.{Inject, _}
+import org.pac4j.core.config.Config
+import org.pac4j.core.context.Pac4jConstants
+import org.pac4j.core.context.session.SessionStore
+import org.pac4j.core.profile._
+import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
+import org.pac4j.jwt.profile.JwtGenerator
+import org.pac4j.play.PlayWebContext
+import org.pac4j.play.scala._
+import org.pac4j.play.store.PlaySessionStore
+import play.api.mvc._
+import org.pac4j.core.util.CommonHelper
+import play.api.Configuration
+
+import scala.collection.JavaConverters._
+
+/**
+ * This controller creates an `Action` to handle HTTP requests to the
+ * application&#39;s home page.
+ */
+@Singleton
+class HomeController @Inject() (
+  val cc: ControllerComponents,
+  val config: Config,
+  val conf: Configuration,
+  val playSessionStore: PlaySessionStore,
+  val actionBuilder: DefaultActionBuilder
+) extends AbstractController(cc) with Security[CommonProfile] {
+
+  /**
+   * Create an Action to render an HTML page.
+   *
+   * The configuration in the `routes` file means that this method
+   * will be called when the application receives a `GET` request with
+   * a path of `/`.
+   */
+  def index() = Action { implicit request: Request[AnyContent] =&gt;
+    val webContext = new PlayWebContext(request, playSessionStore)
+    val sessionStore = webContext.getSessionStore.asInstanceOf[SessionStore[PlayWebContext]]
+    val sessionId = sessionStore.getOrCreateSessionId(webContext)
+    val csrfToken = sessionStore.get(webContext, Pac4jConstants.CSRF_TOKEN).asInstanceOf[String]
+    Ok(views.html.index(getProfiles(request), sessionId, csrfToken))
+  }
+
+  def loginHttpForm = Secure(&quot;IndirectBasicAuthClient&quot;) { profiles =&gt;
+    actionBuilder { request =&gt;
+      Ok(views.html.protectedIndex(profiles))
+    }
+  }
+
+  def secured() = Secure(&quot;DirectBasicAuthClient&quot;) { profiles =&gt;
+    actionBuilder { request =&gt;
+      Ok(views.html.protectedIndex(profiles))
+    }
+  }
+
+  /**
+    * check the application.conf to find the interceptor for the client to be used
+    * @return
+    */
+  def securedFilters = actionBuilder { request =&gt;
+    val profiles = getProfiles(request)
+    Ok(views.html.protectedIndex(profiles))
+  }
+
+  def jwtGenerate() = Secure(&quot;IndirectBasicAuthClient&quot;) { profiles =&gt;
+    actionBuilder { request =&gt;
+      val generator = new JwtGenerator[CommonProfile](
+        new SecretSignatureConfiguration(conf.get[String](&quot;pac4j.jwt_secret&quot;)))
+      var token = &quot;&quot;
+      if (CommonHelper.isNotEmpty(profiles.asJava)){
+        token = generator.generate(profiles.asJava.get(0))
+      }
+      Ok(views.html.jwt.render(token))
+    }
+  }
+
+  def securedJwt() = Secure(&quot;ParameterClient&quot;) {profiles =&gt;
+    actionBuilder { request =&gt;
+      Ok(views.html.protectedIndex(profiles))
+    }
+  }
+
+
+  //this method can be moved to a common trait
+  private def getProfiles(implicit request: RequestHeader): List[CommonProfile] = {
+    val webContext = new PlayWebContext(request, playSessionStore)
+    val profileManager = new ProfileManager[CommonProfile](webContext)
+    val profiles = profileManager.getAll(true)
+    asScalaBuffer(profiles).toList
+  }
+}</code></pre>
+<h3><a href="#using-security-filters" name="using-security-filters" class="anchor"><span class="anchor-link"></span></a>Using Security Filters</h3>
+<p>Alternatively, we can secure a set of routes via <code>SecurityFilters</code>. In order to do that we need to:</p>
+<ol>
+  <li>define a class <code>Filters</code> in the package <code>app\filters</code></li>
+</ol>
+<pre class="prettyprint"><code class="language-scala">package filters
+
+import javax.inject.Inject
+
+import org.pac4j.play.filters.SecurityFilter
+import play.api.http.HttpFilters
+
+class Filters @Inject()(securityFilter: SecurityFilter) extends HttpFilters {
+
+  def filters = Seq(securityFilter)
+
+}</code></pre>
+<ol>
+  <li>load the filter in the <code>application.conf</code></li>
+</ol>
+<pre class="prettyprint"><code class="language-hocon"><br/>play.http.filters = &quot;filters.Filters&quot;
+</code></pre>
+<ol>
+  <li>add the filters rules in the <code>application.conf</code>. Here we are securing the path <code>/basicalternative</code>, using the instance of <code>DirectBasicAuthClient</code> defined in the <code>SecurityModule</code> class.</li>
+</ol>
+<pre class="prettyprint"><code class="language-hocon"><br/>pac4j.security {
+  rules = [
+    {&quot;/basicalternative&quot; = {
+      authorizers = &quot;_authenticated_&quot;
+      clients = &quot;DirectBasicAuthClient&quot;
+    }}
+  ]
+}
+</code></pre><div class="callout note "><div class="callout-title">Note</div>
+<p>We can protect multiple routes by using wildcards and regular expression.</p>
+<pre class="prettyprint"><code class="language-hocon"><br/>pac4j.security {
+  rules = [
+    {&quot;/filter/basicauth.*&quot; = {
+      authorizers = &quot;_authenticated_&quot;
+      clients = &quot;IndirectBasicAuthClient&quot;
+    }}
+    {&quot;/filter/.*&quot; = {
+      authorizers = &quot;_authenticated_&quot;
+    }}
+  ]
+}
+
+</code></pre></div>
+<p>This is what we need to setup basic authentication. Now we can start the application with <code>sbt run</code> and then do the following curl to login with basic auth using admin/admin (encoded) as credentials.</p>
+<pre class="prettyprint"><code class="language-bash"><br/>curl -X GET &quot;http://localhost:9000/basicsecured&quot; -H  &quot;accept: application/json&quot; -H  &quot;Authorization: Basic YWRtaW46YWRtaW4=&quot;
+
+</code></pre>
+<h2><a href="#handling-authentication-errors" name="handling-authentication-errors" class="anchor"><span class="anchor-link"></span></a>Handling Authentication Errors</h2>
+<p>In order to make clear the errors in case of authentication errors we setup common helpers. More details can be found <a href="common_helpers.html">here</a></p>
+<p>In the following we will see:</p>
+<ol>
+  <li>how to use <code>IndirectBasicAuthClient</code> to perform the login using the browser</li>
+  <li>how to use <code>ParameterClient</code> to perform the login via a param <code>?token</code></li>
+  <li>how to perform the logout.</li>
+</ol>
+<div class="nav-next">
+<p><strong>Next:</strong> <a href="common_helpers.html">Common Helpers</a></p>
+</div>
+</div>
+<div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="basic_auth.html#basic-authentication" class="header">Basic Authentication</a>
+  <ul>
+    <li><a href="basic_auth.html#security-module" class="header">Security Module</a></li>
+    <li><a href="basic_auth.html#securing-a-controller" class="header">Securing a Controller</a></li>
+    <li><a href="basic_auth.html#handling-authentication-errors" class="header">Handling Authentication Errors</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
+</div>
+</div>
+
+</section>
+</div>
+
+</div>
+
+<footer class="site-footer">
+
+<section class="site-footer-nav">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 medium-4 large-3 text-center column">
+<div class="nav-links">
+<ul>
+<!-- <li><a href="https://www.example.com/products/">Products</a> -->
+</ul>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="site-footer-base">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 text-center large-9 column">
+
+<!--
+<div class="copyright">
+<span class="text">&copy; 2018</span>
+<a href="https://www.example.com" class="logo">logo</a>
+</div>
+-->
+</div>
+
+</div>
+</div>
+</div>
+</section>
+</footer>
+
+</div>
+</div>
+</div>
+</body>
+
+<script type="text/javascript" src="lib/foundation/dist/foundation.min.js"></script>
+<script type="text/javascript">jQuery(document).foundation();</script>
+<script type="text/javascript" src="js/magellan.js"></script>
+
+<style type="text/css">@import "lib/prettify/prettify.css";</style>
+<script type="text/javascript" src="lib/prettify/prettify.js"></script>
+<script type="text/javascript" src="lib/prettify/lang-scala.js"></script>
+<script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
+
+</html>

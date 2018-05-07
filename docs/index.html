@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+<title>Pac4j Play Integration</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content='play-pac4j-playground'/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:100normal,100italic,300normal,300italic,400normal,400italic,500normal,500italic,700normal,700italic,900normal,900italicc" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="js/page.js"></script>
+<script type="text/javascript" src="js/groups.js"></script>
+<link rel="stylesheet" type="text/css" href="lib/normalize.css/normalize.css"/>
+<link rel="stylesheet" type="text/css" href="lib/foundation/dist/foundation.min.css"/>
+<link rel="stylesheet" type="text/css" href="css/page.css"/>
+
+<!--
+<link rel="shortcut icon" href="images/favicon.ico" />
+-->
+</head>
+
+<body>
+<div class="off-canvas-wrapper">
+<div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+
+<div class="off-canvas position-left" id="off-canvas-menu" data-off-canvas>
+<nav class="off-canvas-nav">
+<div class="nav-home">
+<a href="index.html" class="active">
+<span class="home-icon">⌂</span>Pac4j Play Integration
+</a>
+<div class="version-number">
+1.0.0*
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="basic_auth.html" class="page">Basic Authentication</a></li>
+  <li><a href="common_helpers.html" class="page">Common Helpers</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="off-canvas-content" data-off-canvas-content>
+
+<header class="site-header expanded row">
+<div class="small-12 column">
+<a href="#" class="off-canvas-toggle hide-for-medium" data-toggle="off-canvas-menu"><svg class="svg-icon svg-icon-menu" version="1.1" id="Menu" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve"> <path class="svg-icon-menu-path" fill="#53CDEC" d="M16.4,9H3.6C3.048,9,3,9.447,3,10c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,9.447,16.952,9,16.4,9z M16.4,13
+H3.6C3.048,13,3,13.447,3,14c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,13.447,16.952,13,16.4,13z M3.6,7H16.4
+C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.048,7,3.6,7z"/></svg>
+</a>
+<div class="title"><a href="index.html" class="active">Pac4j Play Integration</a></div>
+
+<!--
+<a href="https://www.example.com" class="logo show-for-medium">logo</a>
+-->
+</div>
+</header>
+
+<div class="expanded row">
+
+<div class="medium-3 large-2 show-for-medium column">
+<nav class="site-nav">
+<div class="nav-home">
+<a href="index.html" class="active">
+<span class="home-icon">⌂</span>Pac4j Play Integration
+</a>
+<div class="version-number">
+1.0.0*
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="basic_auth.html" class="page">Basic Authentication</a></li>
+  <li><a href="common_helpers.html" class="page">Common Helpers</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="small-12 medium-9 large-10 column">
+<section class="site-content">
+
+<div class="page-header row">
+<div class="medium-12 show-for-medium column">
+</div>
+</div>
+
+<div class="page-content row">
+<div class="small-12 large-9 column" id="docs">
+<h1><a href="#pac4j-play-integration" name="pac4j-play-integration" class="anchor"><span class="anchor-link"></span></a>Pac4j Play Integration</h1>
+<p>The goal of this project is to create a well documented playground for pac4j authentication and authorization with Play.</p>
+<p>The main concepts in pac4j are:</p>
+<ul>
+  <li><strong>a client</strong>: that represents an authentication mechanism. It performs the login process and returns a user profile.</li>
+  <li><strong>an authenticator</strong>: is required by HTTP clients to validate provided credentials.</li>
+  <li><strong>an authorizer</strong>: that checks if the given profile has the rights to access a requested resource.</li>
+  <li><strong>a matcher</strong>: defines a (regular) expression that is applied on security filters</li>
+  <li><strong>a config</strong>: which defines the security configurations via clients, authorizers and matchers</li>
+</ul>
+<h2><a href="#1-clients" name="1-clients" class="anchor"><span class="anchor-link"></span></a>1. Clients</h2>
+<p>Clients can be categorized into:</p>
+<ol>
+  <li><strong>direct client</strong>: such as web services o HTTP clients, which negotiate the access directly.</li>
+  <li><strong>indirect client</strong>: that uses redirects to a third party service to perform the login (e.g. facebook, google, twitter) More details about them can be found <a href="http://www.pac4j.org/docs/clients.html#1-direct-vs-indirect-clients">here</a></li>
+</ol>
+<p>The first category is for web service authentication, where the credentials happens for each http request (stateless). The second category if for UI authentication and the login happens once per session (stateful).</p>
+<p>The supported clients are listed <a href="http://www.pac4j.org/docs/clients.html">here</a>.</p>
+<p>While most clients are self-sufficient, the HTTP clients require defining an Authenticator to handle the credentials validation.</p>
+<p>In this playground we are interested in:</p>
+<ol>
+  <li>basic auth (using both indirect (<a href="https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/client/indirect/IndirectBasicAuthClient.java">IndirectBasicAuthClient</a>) and direct (<a href="https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/client/direct/DirectBasicAuthClient.java">DirectBasicAuthClient</a>) clients).</li>
+  <li>cookie client: <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/client/direct/CookieClient.java">CookieClient</a> value sent as a cookie</li>
+  <li>header client: <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/client/direct/HeaderClient.java">HeaderClient</a> value sent as a HTTP header</li>
+  <li>parameter client: <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/client/direct/ParameterClient.java">ParameterClient</a> value sent as a HTTP parameter</li>
+</ol>
+<p>Clients (like Authorizers) are generally defined in a <a href="http://www.pac4j.org/docs/config.html">security configuration</a>.</p>
+<h2><a href="#2-authenticator" name="2-authenticator" class="anchor"><span class="anchor-link"></span></a>2. Authenticator</h2>
+<p>It is used by <strong>Clients</strong> (see above) to validate credentials and create a user profile. The <code>Authenticator</code> interface has only one method</p>
+<pre class="prettyprint"><code class="language-scala">def validate(c: Credentials, context: WebContext): Unit {
+
+}
+</code></pre>
+<p>Credentials provided via clients can be of two types:</p>
+<ul>
+  <li>username/password <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/UsernamePasswordCredentials.java">UsernamePasswordCredentials</a></li>
+  <li>tokens <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/TokenCredentials.java">Token Credentials</a> such as JWT</li>
+</ul>
+<p>We can define different <a href="http://www.pac4j.org/docs/authenticators.html">Authenticators</a>, but we are interested on: - LDAP - JWT - REST API</p>
+<h3><a href="#recommendations-" name="recommendations-" class="anchor"><span class="anchor-link"></span></a>Recommendations:</h3>
+<ol>
+  <li>use a <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/LocalCachingAuthenticator.java">LocalCachingAuthenticator</a> to cache the requests made to the identity provider. It uses guava but it can be modified to use another store.</li>
+</ol>
+<h2><a href="#3-authorizer" name="3-authorizer" class="anchor"><span class="anchor-link"></span></a>3. Authorizer</h2>
+<p>It checks if a user profile extracted by a client has the authorization to access the requested resource.</p>
+<p>Urls can be protected via:</p>
+<ul>
+  <li><strong>Secure annotation</strong> on controllers methods</li>
+</ul>
+<pre class="prettyprint"><code class="language-scala"><br/>  def basicSecured() = Secure(&quot;DirectBasicAuthClient&quot;) { profiles =&gt;
+    actionBuilder { request =&gt;
+      Ok(views.html.protectedpage(profiles))
+    }
+  }
+
+</code></pre>
+<ul>
+  <li><strong>Security filter</strong> defined in the <code>application.conf</code> file</li>
+</ul>
+<pre class="prettyprint"><code class="language-hocon "><br/>pac4j.security {
+  rules = [
+    {&quot;/profile&quot; = {
+      authorizers = &quot;_authenticated_&quot;
+      clients = &quot;DirectBasicAuthClient&quot;
+    }}
+  ]
+}
+
+</code></pre>
+<div class="nav-next">
+<p><strong>Next:</strong> <a href="basic_auth.html">Basic Authentication</a></p>
+</div>
+</div>
+<div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="index.html#pac4j-play-integration" class="header">Pac4j Play Integration</a>
+  <ul>
+    <li><a href="index.html#1-clients" class="header">1. Clients</a></li>
+    <li><a href="index.html#2-authenticator" class="header">2. Authenticator</a></li>
+    <li><a href="index.html#3-authorizer" class="header">3. Authorizer</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
+</div>
+</div>
+
+</section>
+</div>
+
+</div>
+
+<footer class="site-footer">
+
+<section class="site-footer-nav">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 medium-4 large-3 text-center column">
+<div class="nav-links">
+<ul>
+<!-- <li><a href="https://www.example.com/products/">Products</a> -->
+</ul>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="site-footer-base">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 text-center large-9 column">
+
+<!--
+<div class="copyright">
+<span class="text">&copy; 2018</span>
+<a href="https://www.example.com" class="logo">logo</a>
+</div>
+-->
+</div>
+
+</div>
+</div>
+</div>
+</section>
+</footer>
+
+</div>
+</div>
+</div>
+</body>
+
+<script type="text/javascript" src="lib/foundation/dist/foundation.min.js"></script>
+<script type="text/javascript">jQuery(document).foundation();</script>
+<script type="text/javascript" src="js/magellan.js"></script>
+
+<style type="text/css">@import "lib/prettify/prettify.css";</style>
+<script type="text/javascript" src="lib/prettify/prettify.js"></script>
+<script type="text/javascript" src="lib/prettify/lang-scala.js"></script>
+<script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
+
+</html>
