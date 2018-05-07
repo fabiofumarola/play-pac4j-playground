@@ -6,11 +6,12 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 
-GET     /basicsecured               controllers.HomeController.basicSecured
-GET     /basicalternative           controllers.HomeController.basicAuthAlternative
-GET     /browserform                controllers.HomeController.browserForm
-GET     /paramsecured               controllers.HomeController.paramSecured
+GET     /login/httpform             controllers.HomeController.loginHttpForm
 
+GET     /secured                    controllers.HomeController.secured
+GET     /secured/filters            controllers.HomeController.securedFilters
+GET     /jwt/generate               controllers.HomeController.jwtGenerate
+GET     /jwt/secured              controllers.HomeController.securedJwt
 
 # Routes necessary for play-pac4j
 GET         /callback                         @org.pac4j.play.CallbackController.callback()

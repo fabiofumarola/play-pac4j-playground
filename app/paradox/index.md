@@ -2,6 +2,8 @@
 
 * [Basic Authentication](basic_auth.md)
 * [Helpers](common_helpers.md)
+* [Indirect Client](indirect_clients.md)
+* [LDAP JWT authorizer](authorizers.md)
 
 @@@
 
