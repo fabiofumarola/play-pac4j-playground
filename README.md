@@ -13,4 +13,4 @@ This project aims to provide a playground for [play-pac4j](https://github.com/pa
 2. [Indirect Clients](https://github.com/fabiofumarola/play-pac4j-playground/tree/indirect_clients): used for web service access
 3. [LDAP and JWT authorizer](https://github.com/fabiofumarola/play-pac4j-playground/tree/authorizers).
 
-the documentation can be found at 
+the documentation can be found at [https://fabiofumarola.github.io/play-pac4j-playground/](https://fabiofumarola.github.io/play-pac4j-playground/).
