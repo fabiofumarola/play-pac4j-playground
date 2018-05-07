@@ -9,8 +9,8 @@ This project aims to provide a playground for [play-pac4j](https://github.com/pa
 
 ## Sections
 
-1. Basic Authentication: via web form used for UI access
-2. Indirect Clients: used for web service access
-3. LDAP and JWT authorizer.
+1. [Basic Authentication](https://github.com/fabiofumarola/play-pac4j-playground/tree/basic_auth): via web form used for UI access
+2. [Indirect Clients](https://github.com/fabiofumarola/play-pac4j-playground/tree/indirect_clients): used for web service access
+3. [LDAP and JWT authorizer](https://github.com/fabiofumarola/play-pac4j-playground/tree/authorizers).
 
 the documentation can be found at 
